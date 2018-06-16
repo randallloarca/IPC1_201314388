@@ -1,0 +1,57 @@
+
+import javax.swing.JLabel;
+
+public class Cronometro extends Thread {
+
+    
+    public JLabel etiqueta;
+
+    public Cronometro(JLabel cronometro) {
+        this.etiqueta = cronometro;
+    }
+
+    public void run() {
+        try {
+            int x = 0;
+            while (Ventana_Juego.iniciaHilo) {
+                Thread.sleep(900);
+                ejecutarHiloCronometro(x);
+                x++;
+            }
+        } catch (Exception e) {
+            System.out.println("Error en el Hilo");
+        }
+    }
+
+    private void ejecutarHiloCronometro(int x) {
+        System.out.println(x+"-"+Thread.currentThread().getName());
+        Ventana_Juego.segundos++;
+        if (Ventana_Juego.segundos > 59) {
+            Ventana_Juego.segundos = 0;
+            Ventana_Juego.minutos++;
+            if (Ventana_Juego.minutos > 59) {
+                Ventana_Juego.minutos = 0;
+                Ventana_Juego.hora++;
+            }
+        }
+        String textSeg = "", textMin = "", textHora = "";
+        if (Ventana_Juego.segundos < 10) {
+            textSeg = "0" + Ventana_Juego.segundos;
+        } else {
+            textSeg = "" + Ventana_Juego.segundos;
+        }
+        if (Ventana_Juego.minutos < 10) {
+            textMin = "0" + Ventana_Juego.minutos;
+        } else {
+            textMin = "" + Ventana_Juego.minutos;
+        }
+        if (Ventana_Juego.hora < 10) {
+            textHora = "0" + Ventana_Juego.hora;
+        } else {
+            textHora = "" + Ventana_Juego.hora;
+        }
+
+        String reloj = textHora + ":" + textMin + ":" + textSeg;
+        etiqueta.setText(reloj);
+    }
+}
