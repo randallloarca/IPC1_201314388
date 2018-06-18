@@ -26,7 +26,7 @@ public class Cronometro extends Thread {
     }
 
     private void ejecutarHiloCronometro(int x) {
-        System.out.println(x + "-" + Thread.currentThread().getName());
+//        System.out.println(x + "-" + Thread.currentThread().getName());
         if (Ventana_Juego.segundos != 0) {
             Ventana_Juego.segundos--;
         } else {

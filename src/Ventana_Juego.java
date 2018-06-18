@@ -296,6 +296,11 @@ public class Ventana_Juego extends javax.swing.JFrame {
         });
 
         Mov_Arriba.setText("Arriba");
+        Mov_Arriba.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Mov_ArribaActionPerformed(evt);
+            }
+        });
 
         Mov_Derecha.setText("Derecha");
         Mov_Derecha.addActionListener(new java.awt.event.ActionListener() {
@@ -305,6 +310,11 @@ public class Ventana_Juego extends javax.swing.JFrame {
         });
 
         Mov_Abajo.setText("Abajo");
+        Mov_Abajo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Mov_AbajoActionPerformed(evt);
+            }
+        });
 
         jLabel11.setText("Personajes");
 
@@ -366,9 +376,7 @@ public class Ventana_Juego extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(nombreJug1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(110, 110, 110))))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(591, 591, 591)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,16 +412,15 @@ public class Ventana_Juego extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
-                        .addComponent(jLabel5)
-                        .addGap(45, 45, 45))
+                        .addComponent(jLabel5))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(personaje1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(personaje2, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(personaje3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9)))
+                        .addComponent(personaje3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel7)
@@ -435,9 +442,7 @@ public class Ventana_Juego extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(Tirar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDado, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lblDado, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Mov_Arriba)
                 .addGap(6, 6, 6)
@@ -467,7 +472,7 @@ public class Ventana_Juego extends javax.swing.JFrame {
                 if (evt.getSource() == Regresar) {
                     corriendo = false;
                     iniciaHilo = false;
-                    Cronometro c = new Cronometro(Tiempo,cantidadCrono);
+                    Cronometro c = new Cronometro(Tiempo, cantidadCrono);
                     c.stop();
                 }
             }
@@ -522,9 +527,11 @@ public class Ventana_Juego extends javax.swing.JFrame {
         buscar_avatar(turno_jugador);
         select_Turno = true;
         if (select_Turno == true) {
+
             Movimiento_Personaje mov = new Movimiento_Personaje(this, valor_dado, 4, select_Turno);
             mov.start();
             cambia_turnos(turno_jugador);
+
         }
 
     }//GEN-LAST:event_Mov_IzquierdaActionPerformed
@@ -543,6 +550,34 @@ public class Ventana_Juego extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_Mov_DerechaActionPerformed
+
+    private void Mov_ArribaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mov_ArribaActionPerformed
+
+        //solo prueba
+        buscar_avatar(turno_jugador);
+        //
+        select_Turno = true;
+        if (select_Turno == true) {
+            Movimiento_Personaje mov = new Movimiento_Personaje(this, valor_dado, 8, select_Turno);
+            mov.start();
+
+            cambia_turnos(turno_jugador);
+        }
+    }//GEN-LAST:event_Mov_ArribaActionPerformed
+
+    private void Mov_AbajoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mov_AbajoActionPerformed
+        // TODO add your handling code here:
+        //solo prueba
+        buscar_avatar(turno_jugador);
+        //
+        select_Turno = true;
+        if (select_Turno == true) {
+            Movimiento_Personaje mov = new Movimiento_Personaje(this, valor_dado, 2, select_Turno);
+            mov.start();
+
+            cambia_turnos(turno_jugador);
+        }
+    }//GEN-LAST:event_Mov_AbajoActionPerformed
 
     public void cambia_turnos(int turno) {
 
@@ -671,7 +706,7 @@ public class Ventana_Juego extends javax.swing.JFrame {
     private void iniciarHiloCronometro() {
         if (iniciaHilo == true) {
             minutos = cantidadCrono;
-            Cronometro miCronometro = new Cronometro(Tiempo,cantidadCrono);
+            Cronometro miCronometro = new Cronometro(Tiempo, cantidadCrono);
             miCronometro.start();
         }
     }

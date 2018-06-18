@@ -136,34 +136,23 @@ public class Movimiento_Personaje extends Thread {
             if (cantidad <= 0) {
                 return;
             }
-//
+            //
             if (comprobarArriba()) {
                 //regresar el jugador a la posicion 0
-                cantidad = 0;
-                tab.vecL[0][tab.per.Posicion_Personaje_X] = 0;
-                tab.tablero[0][tab.per.Posicion_Personaje_X].setIcon(null);
-                //tab.posjugx = 0;
-                tab.per.Posicion_Personaje_Y = tab.tam - 1;
-                tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
-                tab.repintar();
+                tab.limpiar_casilla(tab.avatar_f, tab.avatar_c, tab.turno_jugador);
+                tab.avatar_f--;
+                tab.llenar_Matriz(tab.avatar_f, tab.avatar_c, tab.turno_jugador, tab.turno_avatar);
+                cantidad--;
+                Thread.sleep(500);
+                Mover_Arriba(cantidad);
                 return;
+
             }
+        } catch (Exception e) {
+            Logger.getLogger(Movimiento_Personaje.class.getName()).log(Level.SEVERE, null, e);
 
-            // Select_movimiento una posicion
-            tab.tablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X].setIcon(null);
-            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
-            tab.repintar();
-            //simula el movimiento hacia adelante
-            tab.per.Posicion_Personaje_Y = tab.per.Posicion_Personaje_Y - 1;
-            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
-            tab.repintar();
-            cantidad--;
-            Thread.sleep(500);
-            Select_movimiento(turno, direccion, cantidad);
-        } catch (InterruptedException ex) {
-
-            Logger.getLogger(Movimiento_Personaje.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     public void Mover_Abajo(int cantidad) {
@@ -174,39 +163,24 @@ public class Movimiento_Personaje extends Thread {
 
             if (comprobarAbajo()) {
                 //regresar el jugador a la posicion 0
-                cantidad = 0;
-                tab.vecL[tab.tam - 1][tab.per.Posicion_Personaje_X] = 0;
-                tab.tablero[tab.tam - 1][tab.per.Posicion_Personaje_X].setIcon(null);
-                //tab.posjugx = 0;
-                tab.per.Posicion_Personaje_Y = 0;
-                tab.vecL[0][tab.per.Posicion_Personaje_X] = 1;
-                tab.repintar();
+                tab.limpiar_casilla(tab.avatar_f, tab.avatar_c, tab.turno_jugador);
+                tab.avatar_f++;
+                tab.llenar_Matriz(tab.avatar_f, tab.avatar_c, tab.turno_jugador, tab.turno_avatar);
+                cantidad--;
+                Thread.sleep(500);
+                Mover_Abajo(cantidad);
                 return;
             }
 
-            // Select_movimiento una posicion
-            tab.tablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X].setIcon(null);
-            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
-            tab.repintar();
-            //simula el movimiento hacia adelante
-            tab.per.Posicion_Personaje_Y = tab.per.Posicion_Personaje_Y + 1;
-            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
-            tab.repintar();
-            cantidad--;
-            Thread.sleep(500);
-            Select_movimiento(turno, direccion, cantidad);
-        } catch (InterruptedException ex) {
-
-            Logger.getLogger(Movimiento_Personaje.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Logger.getLogger(Movimiento_Personaje.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
     public boolean comprobarIzquierda() {
         tab.buscar_avatar(tab.turno_jugador);
         if (tab.avatar_c >= tab.tam - 1) {
-            if (tab.avatar_c <= 0) {
-                return true;
-            }
+            return true;
         }
 
 //        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
@@ -223,32 +197,34 @@ public class Movimiento_Personaje extends Thread {
         if (tab.avatar_c >= tab.tam - 1) {
             return true;
         }
+        return false;
+    }
 
+    public boolean comprobarArriba() {
+
+        tab.buscar_avatar(tab.turno_jugador);
+        if (tab.avatar_f >= tab.tam - 1) {
+            return true;
+        }
 //        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
-//            if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
+//
+//            if (tab.per.Posicion_Personaje_Y <= 0) {
 //                return true;
 //            }
 //        }
         return false;
     }
 
-    public boolean comprobarArriba() {
-
-        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
-
-            if (tab.per.Posicion_Personaje_Y <= 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean comprobarAbajo() {
-        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
-            if (tab.per.Posicion_Personaje_Y >= tab.tam - 1) {
-                return true;
-            }
+        tab.buscar_avatar(tab.turno_jugador);
+        if (tab.avatar_f >= tab.tam - 1) {
+            return true;
         }
+//        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
+//            if (tab.per.Posicion_Personaje_Y >= tab.tam - 1) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
