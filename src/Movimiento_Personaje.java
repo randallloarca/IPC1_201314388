@@ -1,17 +1,26 @@
 
+import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
 public class Movimiento_Personaje extends Thread {
 
     public Ventana_Juego tab;
-    private int[][] matrizRec;
     public int cantidad = 0, direccion = 0;
     public boolean turno = false;
 
-    public Movimiento_Personaje(int[][] matriz, int cantidad, int direccion, boolean turno) {
-        this.matrizRec = matriz;
+    public Movimiento_Personaje(Ventana_Juego tab2, int cantidad, int direccion, boolean turno) {
+        tab = tab2;
+
+        this.cantidad = cantidad;
+        this.direccion = direccion;
+        this.turno = turno;
+    }
+
+    public Movimiento_Personaje(int cantidad, int direccion, boolean turno) {
+
         this.cantidad = cantidad;
         this.direccion = direccion;
         this.turno = turno;
@@ -34,6 +43,54 @@ public class Movimiento_Personaje extends Thread {
         }
     }
 
+    public void llenar_Matriz(int fila, int columna, int elemento, String nombre) {
+        if (tab.mtablero[fila][columna] == 0) {
+            if (elemento == 7) {
+                tab.mtablero[fila][columna] = elemento;
+                tab.tablero[fila][columna].setIcon(tab.Vida_Bomba.obtener_Vida(tab.tambloquex, tab.tambloquex));
+            }
+            if (elemento == 8) {
+                tab.mtablero[fila][columna] = elemento;
+                tab.tablero[fila][columna].setIcon(tab.Vida_Bomba.obtener_Bomba(tab.tambloquex, tab.tambloquex));
+            }
+            if (elemento == 1 || elemento == 2 || elemento == 3) {
+                if (nombre.equals("Princesa")) {
+                    tab.mtablero[fila][columna] = elemento;
+                    tab.tablero[fila][columna].setIcon(tab.per.Obtener_ImagenPrincesa(tab.tambloquex, tab.tambloquex));
+                    tab.tablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.RED));
+                }
+                if (nombre.equals("Guerrero")) {
+                    tab.mtablero[fila][columna] = elemento;
+                    tab.tablero[fila][columna].setIcon(tab.per.Obtener_ImagenGuerrero(tab.tambloquex, tab.tambloquex));
+                    tab.tablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.RED));
+                }
+                if (nombre.equals("Mago")) {
+                    tab.mtablero[fila][columna] = elemento;
+                    tab.tablero[fila][columna].setIcon(tab.per.Obtener_ImagenMago(tab.tambloquex, tab.tambloquex));
+                    tab.tablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.RED));
+                }
+            }
+            if (elemento == 4 || elemento == 5 || elemento == 6) {
+                if (nombre.equals("Princesa")) {
+                    tab.mtablero[fila][columna] = elemento;
+                    tab.tablero[fila][columna].setIcon(tab.per.Obtener_ImagenPrincesa(tab.tambloquex, tab.tambloquex));
+                    tab.tablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+                }
+                if (nombre.equals("Guerrero")) {
+                    tab.mtablero[fila][columna] = elemento;
+                    tab.tablero[fila][columna].setIcon(tab.per.Obtener_ImagenGuerrero(tab.tambloquex, tab.tambloquex));
+                    tab.tablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+                }
+                if (nombre.equals("Mago")) {
+                    tab.mtablero[fila][columna] = elemento;
+                    tab.tablero[fila][columna].setIcon(tab.per.Obtener_ImagenMago(tab.tambloquex, tab.tambloquex));
+                    tab.tablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+                }
+
+            }
+        }
+    }
+
     public void Mover_Derecha(int cantidad) {
         try {
             if (cantidad <= 0) {
@@ -41,26 +98,15 @@ public class Movimiento_Personaje extends Thread {
                 return;
             }
             if (comprobarDerecha()) {
-                //regresar el jugador a la posicion 0
-                cantidad = 0;
-                tab.mtablero[tab.per.Posicion_Personaje_Y][tab.tam - 1] = 0;
-                tab.tablero[tab.per.Posicion_Personaje_Y][tab.tam - 1].setIcon(null);
-                tab.per.Posicion_Personaje_X = 0;
-                tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
-                tab.repintar();
+                //regresar el jugador a la posicion 0            
+                tab.limpiar_casilla(tab.avatar_f, tab.avatar_c, tab.turno_jugador);
+                tab.avatar_c++;
+                tab.llenar_Matriz(tab.avatar_f, tab.avatar_c, tab.turno_jugador, tab.turno_avatar);
+                cantidad--;
+                Thread.sleep(500);
+                Mover_Derecha(cantidad);
                 return;
             }
-            // Select_movimiento una posicion
-            tab.tablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X].setIcon(null);
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
-            tab.repintar();
-            //simula el movimiento hacia adelante
-            tab.per.Posicion_Personaje_X = tab.per.Posicion_Personaje_X + 1;
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
-            tab.repintar();
-            cantidad--;
-            Thread.sleep(500);
-            Select_movimiento(turno, direccion, cantidad);
         } catch (InterruptedException ex) {
             Logger.getLogger(Movimiento_Personaje.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -72,40 +118,14 @@ public class Movimiento_Personaje extends Thread {
                 return;
             }
             if (comprobarIzquierda()) {
-                //regresar el jugador a la posicion 0
-                cantidad = 0;
-                tab.mtablero[tab.per.Posicion_Personaje_Y][tab.tam - 1] = 0;
-                tab.tablero[tab.per.Posicion_Personaje_Y][tab.tam - 1].setIcon(null);
-                tab.per.Posicion_Personaje_X = 0;
-                tab.per.Posicion_Personaje_Y = 0;
-                tab.mtablero[0][0] = 1;
-                tab.repintar();
-                tab.mtablero[tab.per.Posicion_Personaje_Y][0] = 0;
-                tab.tablero[tab.per.Posicion_Personaje_Y][0].setIcon(null);
-                tab.per.Posicion_Personaje_X = tab.tam - 1;
-                tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
-                tab.repintar();
+                tab.limpiar_casilla(tab.avatar_f, tab.avatar_c, tab.turno_jugador);
+                tab.avatar_c--;
+                tab.llenar_Matriz(tab.avatar_f, tab.avatar_c, tab.turno_jugador, tab.turno_avatar);
+                cantidad--;
+                Thread.sleep(500);
+                Mover_Izquierda(cantidad);
                 return;
             }
-
-//             Select_movimiento una posicion
-            tab.tablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X].setIcon(null);
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
-            tab.repintar();
-
-            //simula el movimiento hacia adelante
-            tab.per.Posicion_Personaje_X = tab.per.Posicion_Personaje_X - 1;
-//        if(tab.posjugx<0){
-//            tab.posjugx=tab.tam-1;
-//            cantidad=0;
-//        }
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
-            tab.repintar();
-            cantidad--;
-
-            Thread.sleep(500);
-
-            Select_movimiento(turno, direccion, cantidad);
         } catch (InterruptedException ex) {
             Logger.getLogger(Movimiento_Personaje.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -120,22 +140,22 @@ public class Movimiento_Personaje extends Thread {
             if (comprobarArriba()) {
                 //regresar el jugador a la posicion 0
                 cantidad = 0;
-                tab.mtablero[0][tab.per.Posicion_Personaje_X] = 0;
+                tab.vecL[0][tab.per.Posicion_Personaje_X] = 0;
                 tab.tablero[0][tab.per.Posicion_Personaje_X].setIcon(null);
                 //tab.posjugx = 0;
                 tab.per.Posicion_Personaje_Y = tab.tam - 1;
-                tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
+                tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
                 tab.repintar();
                 return;
             }
 
             // Select_movimiento una posicion
             tab.tablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X].setIcon(null);
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
+            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
             tab.repintar();
             //simula el movimiento hacia adelante
             tab.per.Posicion_Personaje_Y = tab.per.Posicion_Personaje_Y - 1;
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
+            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
             tab.repintar();
             cantidad--;
             Thread.sleep(500);
@@ -155,22 +175,22 @@ public class Movimiento_Personaje extends Thread {
             if (comprobarAbajo()) {
                 //regresar el jugador a la posicion 0
                 cantidad = 0;
-                tab.mtablero[tab.tam - 1][tab.per.Posicion_Personaje_X] = 0;
+                tab.vecL[tab.tam - 1][tab.per.Posicion_Personaje_X] = 0;
                 tab.tablero[tab.tam - 1][tab.per.Posicion_Personaje_X].setIcon(null);
                 //tab.posjugx = 0;
                 tab.per.Posicion_Personaje_Y = 0;
-                tab.mtablero[0][tab.per.Posicion_Personaje_X] = 1;
+                tab.vecL[0][tab.per.Posicion_Personaje_X] = 1;
                 tab.repintar();
                 return;
             }
 
             // Select_movimiento una posicion
             tab.tablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X].setIcon(null);
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
+            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 0;
             tab.repintar();
             //simula el movimiento hacia adelante
             tab.per.Posicion_Personaje_Y = tab.per.Posicion_Personaje_Y + 1;
-            tab.mtablero[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
+            tab.vecL[tab.per.Posicion_Personaje_Y][tab.per.Posicion_Personaje_X] = 1;
             tab.repintar();
             cantidad--;
             Thread.sleep(500);
@@ -182,24 +202,38 @@ public class Movimiento_Personaje extends Thread {
     }
 
     public boolean comprobarIzquierda() {
-        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
-            if (tab.per.Posicion_Personaje_X <= 0) {
+        tab.buscar_avatar(tab.turno_jugador);
+        if (tab.avatar_c >= tab.tam - 1) {
+            if (tab.avatar_c <= 0) {
                 return true;
             }
         }
+
+//        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
+//            if (tab.per.Posicion_Personaje_X <= 0) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
     public boolean comprobarDerecha() {
-        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
-            if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
-                return true;
-            }
+        //solo para el 1
+        tab.buscar_avatar(tab.turno_jugador);
+        if (tab.avatar_c >= tab.tam - 1) {
+            return true;
         }
+
+//        if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
+//            if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
     public boolean comprobarArriba() {
+
         if (tab.per.Posicion_Personaje_X >= tab.tam - 1) {
 
             if (tab.per.Posicion_Personaje_Y <= 0) {

@@ -1,4 +1,5 @@
 
+import com.jtattoo.plaf.aluminium.AluminiumLookAndFeel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -13,10 +14,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 public class Ventana_Juego extends javax.swing.JFrame {
+
+    //turnos
+    public int turno_jugador = 1;
+    public String turno_avatar;
 
     //Variables usadas para generar la matriz del juego, y el tablero 
     public int tam = 0;
@@ -31,10 +37,6 @@ public class Ventana_Juego extends javax.swing.JFrame {
     //variables usadas para ingresar los nombres de los jugadores y seleccionar sus personajes en el orden que ellos deseen
     private String nombreJ1, nombreJ2, Per1Jug1, Per2Jug1, Per3Jug1, Per1Jug2, Per2Jug2, Per3Jug2;
     private javax.swing.border.Border border;
-
-    //variables usadas para generar el conometro del juego
-    public static int hora = 0, minutos = 0, segundos = 0;
-    public JLabel Tiempo;
 
     //set y get del JLabel del tiempo
     public JLabel getTiempo() {
@@ -55,13 +57,15 @@ public class Ventana_Juego extends javax.swing.JFrame {
         crear_vidas(TamañoMatriz);
         crear_bombas(TamañoMatriz);
         crearDado();
+        add(GenerarVidasJug1());
+        add(GenerarVidasJug2());
     }
 
     //variables usadas para menear el avatar
     int avatar_f = 0;
     int avatar_c = 0;
 
-    private void buscar_avatar(int avatar) {
+    public void buscar_avatar(int avatar) {
         for (int i = 0; i < TamañoMatriz; i++) {
             for (int j = 0; j < TamañoMatriz; j++) {
                 if (mtablero[i][j] == avatar) {
@@ -154,6 +158,8 @@ public class Ventana_Juego extends javax.swing.JFrame {
     public int columna;
 
     public void llenar_Matriz(int fila, int columna, int elemento, String nombre) {
+        Boolean item = false;
+        int temp = 0;
         if (mtablero[fila][columna] == 0) {
             if (elemento == 7) {
                 mtablero[fila][columna] = elemento;
@@ -164,6 +170,11 @@ public class Ventana_Juego extends javax.swing.JFrame {
                 tablero[fila][columna].setIcon(this.Vida_Bomba.obtener_Bomba(tambloquex, tambloquex));
             }
             if (elemento == 1 || elemento == 2 || elemento == 3) {
+                if (mtablero[fila][columna] == 7 || mtablero[fila][columna] == 8) {
+                    temp = mtablero[fila][columna];
+                    item = true;
+
+                }
                 if (nombre.equals("Princesa")) {
                     mtablero[fila][columna] = elemento;
                     tablero[fila][columna].setIcon(this.per.Obtener_ImagenPrincesa(tambloquex, tambloquex));
@@ -178,6 +189,10 @@ public class Ventana_Juego extends javax.swing.JFrame {
                     mtablero[fila][columna] = elemento;
                     tablero[fila][columna].setIcon(this.per.Obtener_ImagenMago(tambloquex, tambloquex));
                     tablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.RED));
+                }
+                if (item) {
+
+                    llenar_Matriz(fila, columna, temp, "");
                 }
             }
             if (elemento == 4 || elemento == 5 || elemento == 6) {
@@ -248,8 +263,6 @@ public class Ventana_Juego extends javax.swing.JFrame {
         personaje4 = new javax.swing.JLabel();
         personaje5 = new javax.swing.JLabel();
         personaje6 = new javax.swing.JLabel();
-        vidasJug1 = new javax.swing.JPanel();
-        vidasJug2 = new javax.swing.JPanel();
         Regresar = new javax.swing.JButton();
         Guardar = new javax.swing.JButton();
         lblDado = new javax.swing.JLabel();
@@ -296,28 +309,6 @@ public class Ventana_Juego extends javax.swing.JFrame {
         jLabel11.setText("Personajes");
 
         jLabel15.setText("Personajes");
-
-        javax.swing.GroupLayout vidasJug1Layout = new javax.swing.GroupLayout(vidasJug1);
-        vidasJug1.setLayout(vidasJug1Layout);
-        vidasJug1Layout.setHorizontalGroup(
-            vidasJug1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        vidasJug1Layout.setVerticalGroup(
-            vidasJug1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 77, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout vidasJug2Layout = new javax.swing.GroupLayout(vidasJug2);
-        vidasJug2.setLayout(vidasJug2Layout);
-        vidasJug2Layout.setHorizontalGroup(
-            vidasJug2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        vidasJug2Layout.setVerticalGroup(
-            vidasJug2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 80, Short.MAX_VALUE)
-        );
 
         Regresar.setText("Regresar Menu");
         Regresar.addActionListener(new java.awt.event.ActionListener() {
@@ -375,12 +366,9 @@ public class Ventana_Juego extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(nombreJug1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(vidasJug2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(vidasJug1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(110, 110, 110))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(591, 591, 591)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -413,20 +401,19 @@ public class Ventana_Juego extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(nombreJug1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(27, 27, 27)
-                            .addComponent(jLabel5))
-                        .addComponent(vidasJug1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(jLabel5)
+                        .addGap(45, 45, 45))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(personaje1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(personaje2, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(personaje3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(9, 9, 9)
+                        .addComponent(personaje3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel7)
@@ -442,10 +429,8 @@ public class Ventana_Juego extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(personaje5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(personaje6, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(vidasJug2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(personaje6, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(14, 14, 14)
@@ -472,19 +457,23 @@ public class Ventana_Juego extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
-        int dato;
-        dato = JOptionPane.showConfirmDialog(null, "¡Desea Volver a la Página Principal?", "Seleccione Una Opción", JOptionPane.YES_NO_CANCEL_OPTION);
-        if (dato == 0) {
-            this.dispose();
-            ComponentesDeJuego vj = new ComponentesDeJuego();
-            vj.show();
-            if (evt.getSource() == Regresar) {
-                corriendo = false;
-                iniciaHilo = false;
-                Cronometro c = new Cronometro(Tiempo);
-                c.stop();
+        try {
+            int dato;
+            dato = JOptionPane.showConfirmDialog(null, "¡Desea Volver a la Página Principal?", "Seleccione Una Opción", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (dato == 0) {
+                this.dispose();
+                ComponentesDeJuego vj = new ComponentesDeJuego();
+                vj.show();
+                if (evt.getSource() == Regresar) {
+                    corriendo = false;
+                    iniciaHilo = false;
+                    Cronometro c = new Cronometro(Tiempo,cantidadCrono);
+                    c.stop();
+                }
             }
+        } catch (Exception e) {
         }
+
 
     }//GEN-LAST:event_RegresarActionPerformed
 
@@ -495,6 +484,29 @@ public class Ventana_Juego extends javax.swing.JFrame {
         this.repaint();
         valor_dado = rnd.nextInt(6) + 1;
         lblDado.setIcon(ImagenDado(valor_dado));
+
+        switch (turno_jugador) {
+            case 1:
+                turno_avatar = this.Per1Jug1;
+                break;
+            case 2:
+                turno_avatar = this.Per2Jug1;
+                break;
+            case 3:
+                turno_avatar = this.Per3Jug1;
+                break;
+            case 4:
+                turno_avatar = this.Per1Jug2;
+                break;
+            case 5:
+                turno_avatar = this.Per2Jug2;
+                break;
+            case 6:
+                turno_avatar = this.Per3Jug2;
+                break;
+        }
+        JOptionPane.showMessageDialog(null, "Turno: " + turno_jugador + " " + "Jugador: " + turno_avatar);
+
     }//GEN-LAST:event_TirarActionPerformed
 
     public void limpiar_casilla(int fila, int columna, int elemento) {
@@ -507,30 +519,61 @@ public class Ventana_Juego extends javax.swing.JFrame {
     Thread hilo;
 
     private void Mov_IzquierdaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mov_IzquierdaActionPerformed
-        int p = 1;
-        buscar_avatar(1);
-        while (p <= valor_dado) {
-            limpiar_casilla(avatar_f, avatar_c, 1);
-            avatar_c--;
-            llenar_Matriz(avatar_f, avatar_c, 1, Per1Jug1);
-            this.repaint();
-            p++;
-
+        buscar_avatar(turno_jugador);
+        select_Turno = true;
+        if (select_Turno == true) {
+            Movimiento_Personaje mov = new Movimiento_Personaje(this, valor_dado, 4, select_Turno);
+            mov.start();
+            cambia_turnos(turno_jugador);
         }
+
     }//GEN-LAST:event_Mov_IzquierdaActionPerformed
 
     public boolean select_Turno = false;
     private void Mov_DerechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mov_DerechaActionPerformed
+        //solo prueba
+        buscar_avatar(turno_jugador);
+        //
+        select_Turno = true;
         if (select_Turno == true) {
-            Movimiento_Personaje mov = new Movimiento_Personaje(mtablero, valor_dado, 6, select_Turno);
+            Movimiento_Personaje mov = new Movimiento_Personaje(this, valor_dado, 6, select_Turno);
             mov.start();
+
+            cambia_turnos(turno_jugador);
         }
 
     }//GEN-LAST:event_Mov_DerechaActionPerformed
 
+    public void cambia_turnos(int turno) {
+
+        switch (turno_jugador) {
+            case 1:
+                turno_jugador = 4;
+                break;
+            case 4:
+                turno_jugador = 2;
+                break;
+            case 2:
+                turno_jugador = 5;
+                break;
+            case 5:
+                turno_jugador = 3;
+                break;
+            case 3:
+                turno_jugador = 6;
+                break;
+            case 6:
+                turno_jugador = 1;
+                break;
+        }
+
+    }
     //Funcion en la cual genera el tamaño de la matriz
+    static int cantidadCrono;
+
     public int tamMatriz() {
         TamañoMatriz = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese Tamaño de La Matriz (Inicia de 8x8 a 18x18)", JOptionPane.INFORMATION_MESSAGE));
+        cantidadCrono = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese El Tiempo del Juego", JOptionPane.INFORMATION_MESSAGE));
         int comprobar = TamañoMatriz;
         if ((comprobar < 8 || comprobar > 18)) {
             JOptionPane.showMessageDialog(null, "Fuera del Rango establecido al inicio, Ingrese de Nuevo los Valores");
@@ -543,7 +586,7 @@ public class Ventana_Juego extends javax.swing.JFrame {
             }
         }
 
-        return comprobar;
+        return TamañoMatriz;
     }
 
     // esta funcion nos sirve para crear todas las configuraciones previas antes de comenzar el juego
@@ -551,8 +594,6 @@ public class Ventana_Juego extends javax.swing.JFrame {
         Jugador1();
         Jugador2();
         cronometro();
-        vidasJug1.setBorder(border);
-        vidasJug2.setBorder(border);
         return nombreJ1;
     }
 
@@ -561,7 +602,7 @@ public class Ventana_Juego extends javax.swing.JFrame {
         nombreJ1 = JOptionPane.showInputDialog(null, "Ingrese Nombre Jugador 1:", JOptionPane.INFORMATION_MESSAGE);
         nombreJug1.setText(nombreJ1);
         border = LineBorder.createGrayLineBorder();
-        nombreJug1.setBorder(border);
+        nombreJug1.setBorder(BorderFactory.createLineBorder(Color.RED));
         nombreJug1.setHorizontalAlignment(JLabel.CENTER);
         String[] personajes = {
             "Princesa",
@@ -573,13 +614,13 @@ public class Ventana_Juego extends javax.swing.JFrame {
         Per2Jug1 = (String) JOptionPane.showInputDialog(null, "Seleccione El Orden de Sus Personajes", "Personajes", JOptionPane.INFORMATION_MESSAGE, icon, personajes, personajes[1]);
         Per3Jug1 = (String) JOptionPane.showInputDialog(null, "Seleccione El Orden de Sus Personajes", "Personajes", JOptionPane.INFORMATION_MESSAGE, icon, personajes, personajes[2]);
         personaje1.setText(Per1Jug1);
-        personaje1.setBorder(border);
+        personaje1.setBorder(BorderFactory.createLineBorder(Color.RED));
         personaje1.setHorizontalAlignment(JLabel.CENTER);
         personaje2.setText(Per2Jug1);
-        personaje2.setBorder(border);
+        personaje2.setBorder(BorderFactory.createLineBorder(Color.RED));
         personaje2.setHorizontalAlignment(JLabel.CENTER);
         personaje3.setText(Per3Jug1);
-        personaje3.setBorder(border);
+        personaje3.setBorder(BorderFactory.createLineBorder(Color.RED));
         personaje3.setHorizontalAlignment(JLabel.CENTER);
     }
 
@@ -588,7 +629,7 @@ public class Ventana_Juego extends javax.swing.JFrame {
         ImageIcon icon = new ImageIcon();
         nombreJ2 = JOptionPane.showInputDialog(null, "Ingrese Nombre Jugador 2:", JOptionPane.INFORMATION_MESSAGE);
         nombreJug2.setText(nombreJ2);
-        nombreJug2.setBorder(border);
+        nombreJug2.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
         nombreJug2.setHorizontalAlignment(JLabel.CENTER);
         String[] personajes = {
             "Princesa",
@@ -599,20 +640,24 @@ public class Ventana_Juego extends javax.swing.JFrame {
         Per2Jug2 = (String) JOptionPane.showInputDialog(null, "Seleccione El Orden de Sus Personajes", "Personajes", JOptionPane.INFORMATION_MESSAGE, icon, personajes, personajes[1]);
         Per3Jug2 = (String) JOptionPane.showInputDialog(null, "Seleccione El Orden de Sus Personajes", "Personajes", JOptionPane.INFORMATION_MESSAGE, icon, personajes, personajes[2]);
         personaje4.setText(Per1Jug2);
-        personaje4.setBorder(border);
+        personaje4.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
         personaje4.setHorizontalAlignment(JLabel.CENTER);
         personaje5.setText(Per2Jug2);
-        personaje5.setBorder(border);
+        personaje5.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
         personaje5.setHorizontalAlignment(JLabel.CENTER);
         personaje6.setText(Per3Jug2);
-        personaje6.setBorder(border);
+        personaje6.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
         personaje6.setHorizontalAlignment(JLabel.CENTER);
     }
+
+    //variables usadas para generar el conometro del juego
+    public static int hora = 0, minutos = 0, segundos = 0;
+    public JLabel Tiempo;
 
     //Crea el Conometro en le cual iniciara el juego
     public void cronometro() {
         Tiempo = new JLabel();
-        Tiempo.setBounds(710, 25, 70, 20);
+        Tiempo.setBounds(610, 25, 70, 20);
         Tiempo.setBorder(border);
         Tiempo.setVisible(true);
         Tiempo.setHorizontalAlignment(JLabel.CENTER);
@@ -625,7 +670,8 @@ public class Ventana_Juego extends javax.swing.JFrame {
     //Metodo en el cual se le da el inicio al crometro
     private void iniciarHiloCronometro() {
         if (iniciaHilo == true) {
-            Cronometro miCronometro = new Cronometro(Tiempo);
+            minutos = cantidadCrono;
+            Cronometro miCronometro = new Cronometro(Tiempo,cantidadCrono);
             miCronometro.start();
         }
     }
@@ -633,15 +679,12 @@ public class Ventana_Juego extends javax.swing.JFrame {
 //    Crea el panel donde se encuentra la matriz que se visualizara como el tablero del juego
     public JPanel getPanel(int TamañoMatriz) {
         tambloquex = 400 / TamañoMatriz;// se utliza para redimensionar el tamaño de la imagen
-        Fondo fondo = new Fondo();
         panel = new JPanel();//se crea el panel donde estara contenido la matriz
-        border = LineBorder.createGrayLineBorder();//se le crea un borde al panel
+        border = LineBorder.createBlackLineBorder();//se le crea un borde al panel
         panel.setBorder(border);//se le setea el borde al panel
         tablero = new JLabel[TamañoMatriz][TamañoMatriz];
         panel.setLayout(new GridLayout(TamañoMatriz, TamañoMatriz));
         panel.setBounds(50, 20, 400, 400);
-        panel.add(fondo);
-        panel.repaint();
         vecL = new int[TamañoMatriz][TamañoMatriz];//se inicializa la matriz de enteros con el tamaño correspondiente de la matriz
         vecL[0][0] = 1;//el vector inicia 0 
         this.Vida_Bomba = new Vida_Bomba();// inicializamos la vida o bomba 
@@ -663,33 +706,33 @@ public class Ventana_Juego extends javax.swing.JFrame {
         return panel;
     }
 
-//    public void repintar() {
-//        for (int i = 0; i < tam; i++) {
-//            for (int j = 0; j < tam; j++) {
-//                JLabel tab;
-//                //vacio
-//                if (vecL[i][j] == 0) {
-//                    tab = new JLabel();
-//                    tab.setOpaque(false);
-//                    tab.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 1)));
-//                    tab.setBounds(i * tambloquex, 0, tambloquex, 150);
-//                    tablero[i][j] = tab;
-//                    panel.add(tablero[i][j], BorderLayout.CENTER);
-//                    panel.repaint();
-//
-//                }
-//                if (vecL[i][j] == 1) {
-//                    tab = new JLabel(this.Vida_Bomba.obtener_Vida(tambloquex, tambloquex));
-//                    tab.setOpaque(false);
-//                    tab.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 1)));
-//                    tab.setBounds(i * tambloquex, 0, tambloquex, 150);
-//                    tablero[i][j] = tab;
-//                    panel.add(tablero[i][j], BorderLayout.CENTER);
-//                    panel.repaint();
-//                }
-//            }
-//        }
-//    }
+    public void repintar() {
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < tam; j++) {
+                JLabel tab;
+                //vacio
+                if (vecL[i][j] == 0) {
+                    tab = new JLabel();
+                    tab.setOpaque(false);
+                    tab.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 1)));
+                    tab.setBounds(i * tambloquex, 0, tambloquex, 150);
+                    tablero[i][j] = tab;
+                    panel.add(tablero[i][j], BorderLayout.CENTER);
+                    panel.repaint();
+
+                }
+                if (vecL[i][j] == 1) {
+                    tab = new JLabel(this.Vida_Bomba.obtener_Vida(tambloquex, tambloquex));
+                    tab.setOpaque(false);
+                    tab.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 1)));
+                    tab.setBounds(i * tambloquex, 0, tambloquex, 150);
+                    tablero[i][j] = tab;
+                    panel.add(tablero[i][j], BorderLayout.CENTER);
+                    panel.repaint();
+                }
+            }
+        }
+    }
 
     //Variable usadas para generar el dado del juego
     Icon ricono;
@@ -729,9 +772,48 @@ public class Ventana_Juego extends javax.swing.JFrame {
         return ricono;
     }
 
+    private JLabel[] vidasJugs;
+    private JPanel contenedorJug1, contenedorJug2;
+
+    public JPanel GenerarVidasJug1() {
+        contenedorJug1 = new JPanel();
+        contenedorJug1.setBounds(550, 95, 120, 80);
+
+        border = LineBorder.createBlackLineBorder();
+        contenedorJug1.setBorder(border);
+        int cantidad = 5;
+        vidasJugs = new JLabel[cantidad];
+// inicializamos la vida o bomba 
+        for (int i = 0; i < cantidad; i++) {
+            this.Vida_Bomba = new Vida_Bomba();
+            vidasJugs[i] = new JLabel(this.Vida_Bomba.obtener_Vida(20, 20));
+            contenedorJug1.add(vidasJugs[i]);
+            contenedorJug1.repaint();
+        }
+        return contenedorJug1;
+    }
+
+    public JPanel GenerarVidasJug2() {
+        contenedorJug2 = new JPanel();
+        contenedorJug2.setBounds(550, 205, 120, 80);
+        border = LineBorder.createBlackLineBorder();
+        contenedorJug2.setBorder(border);
+        int cantidad = 5;
+        vidasJugs = new JLabel[cantidad];
+// inicializamos la vida o bomba 
+        for (int i = 0; i < cantidad; i++) {
+            this.Vida_Bomba = new Vida_Bomba();
+            vidasJugs[i] = new JLabel(this.Vida_Bomba.obtener_Vida(20, 20));
+            contenedorJug2.add(vidasJugs[i]);
+            contenedorJug2.repaint();
+        }
+        return contenedorJug2;
+    }
+
     //Metodo Main de la clase
     public static void main(String[] args) {
         try {
+            UIManager.setLookAndFeel(new AluminiumLookAndFeel());
             ComponentesDeJuego vj;
             vj = new ComponentesDeJuego();
             vj.show();
@@ -763,8 +845,6 @@ public class Ventana_Juego extends javax.swing.JFrame {
     private javax.swing.JLabel personaje4;
     private javax.swing.JLabel personaje5;
     private javax.swing.JLabel personaje6;
-    private javax.swing.JPanel vidasJug1;
-    private javax.swing.JPanel vidasJug2;
     // End of variables declaration//GEN-END:variables
 
 }
